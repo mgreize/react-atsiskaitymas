@@ -1,0 +1,96 @@
+{
+  "users": [
+    {
+      "id": "111",
+      "name": "Tomas",
+      "surname": "Tomukas",
+      "email": "tomas@gmail.com",
+      "password": "Vilnius123",
+      "img": "https://media.baamboozle.com/uploads/images/69446/1645456134_63956.jpeg"
+    },
+    {
+      "id": "112",
+      "name": "Jonas",
+      "surname": "Jonaitis",
+      "email": "jonas@gmail.com",
+      "password": "Vilnius123",
+      "img": "https://img.freepik.com/free-photo/front-view-male-student-dark-t-shirt-yellow-backpack-holding-files-books-smiling-light-blue-wall_140725-46715.jpg?w=2000"
+    },
+    {
+      "id": "113",
+      "name": "Eglė",
+      "surname": "Eglaitė",
+      "email": "egle@gmail.com",
+      "password": "Vilnius123",
+      "img": "https://media.istockphoto.com/photos/facing-my-future-with-confidence-picture-id1139495117?k=20&m=1139495117&s=612x612&w=0&h=6P1Q43Oi_yERh9pMLki5LrkF3jaG82puPMeQdCoUNx8="
+    }
+  ],
+  "shopItems": [
+    {
+      "id": "1",
+      "images": [
+        "https://d1rkccsb0jf1bk.cloudfront.net/products/99986640/main/large/jy8037-50e_high_res-1439896505-1302.jpg"
+      ],
+      "price": 199.99,
+      "categories": [
+        "Men's watch"
+      ],
+      "amount": 2
+    },
+    {
+      "id": "2",
+      "images": [
+        "https://d1rkccsb0jf1bk.cloudfront.net/products/100036751/main/medium/xT1166173705100.jpg.pagespeed.ic.6XLa_Y6rix.webp"
+      ],
+      "price": 299.99,
+      "categories": [
+        "Men's watch"
+      ],
+      "amount": 2
+    },
+    {
+      "id": "3",
+      "images": [
+        "https://d1rkccsb0jf1bk.cloudfront.net/products/100037520/main/medium/xAW1428-53X.jpg.pagespeed.ic.nPzJGa_zoy.webp"
+      ],
+      "price": 479.99,
+      "categories": [
+        "Men's watch"
+      ],
+      "amount": 4
+    },
+    {
+      "id": "4",
+      "images": [
+        "https://d1rkccsb0jf1bk.cloudfront.net/products/100032735/main/medium/x1513767_LRG_rgb_Web.jpg.pagespeed.ic.9gAlKecs9f.webp"
+      ],
+      "price": 528.99,
+      "categories": [
+        "Men's watch"
+      ],
+      "amount": 1
+    },
+    {
+      "id": "5",
+      "images": [
+        "https://d1rkccsb0jf1bk.cloudfront.net/products/99957576/main/medium/at8060-09e-1358353480-9868.jpg"
+      ],
+      "price": 340.99,
+      "categories": [
+        "Men's watch"
+      ],
+      "amount": 6
+    },
+    {
+      "id": "6",
+      "images": [
+        "https://d1rkccsb0jf1bk.cloudfront.net/products/100039817/main/medium/xSSC785P1.jpg.pagespeed.ic.nrJqSanOhP.webp"
+      ],
+      "price": 224.99,
+      "categories": [
+        "Men's watch"
+      ],
+      "amount": 2
+    }
+  ]
+}
