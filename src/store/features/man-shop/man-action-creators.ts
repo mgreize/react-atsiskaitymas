@@ -1,5 +1,5 @@
 import { Dispatch } from 'redux';
-import ShopService from '../../../services/shop-service';
+import ManService from '../../../services/man-service';
 import { Item } from '../../../types';
 import { AppAction, RootState } from '../../redux-types';
 import {
@@ -9,7 +9,7 @@ import {
   ShopFetchItemsFailureAction,
   ShopClearErrorAction,
   ShopChangeItemAmountAction,
-} from './shop-types';
+} from '../shop/shop-types';
 
 const shopFetchItemsLoadingAction: ShopFetchItemsLoadingAction = {
   type: ShopActionType.SHOP_FETCH_ITEMS_LOADING,
@@ -37,7 +37,7 @@ export const createShopChangeItemAmountAction = (id: string, amount: number): Sh
 export const shopFetchItemsAction = async (dispatch: Dispatch<AppAction>, getState: () => RootState): Promise<void> => {
   dispatch(shopFetchItemsLoadingAction);
   try {
-    const shopItems = await ShopService.fetchItems();
+    const shopItems = await ManService.fetchItems();
     const { cart: { items: cartItems } } = getState();
 
     const reducedShopItems = shopItems.map((shopItem) => {

@@ -5,7 +5,10 @@ import { Routes, Route } from 'react-router-dom';
 // all
 import HomePage from './pages/home-page';
 import ShopPage from './pages/shop-page/index';
+import WomanPage from './pages/woman-page';
+import ManPage from './pages/man-page';
 import CartPage from './pages/cart-page';
+import SmartPage from './pages/smart-page';
 // visitor
 import LoginPage from './pages/login-page';
 import RegisterPage from './pages/register-page/index';
@@ -24,6 +27,9 @@ const App: React.FC = () => (
       <Route path="/" element={<VisitorLayout />}>
         <Route index element={<HomePage />} />
         <Route path="/shop" element={<ShopPage />} />
+        <Route path="/woman" element={<WomanPage />} />
+        <Route path="/man" element={<ManPage />} />
+        <Route path="/smart" element={<SmartPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route
           path="auth/login"

@@ -29,6 +29,9 @@ const Navbar: React.FC = () => {
           <Box>
             <NavbarLink sx={{ fontSize: 20 }} to="/">Home</NavbarLink>
             <NavbarLink sx={{ fontSize: 20 }} to="/shop">Shop</NavbarLink>
+            <NavbarLink sx={{ fontSize: 20 }} to="/woman">Woman</NavbarLink>
+            <NavbarLink sx={{ fontSize: 20 }} to="/man">Man</NavbarLink>
+            <NavbarLink sx={{ fontSize: 20 }} to="/smart">Smart Watches</NavbarLink>
           </Box>
           <Box sx={{ display: 'flex' }}>
             <NavbarLink to="/cart" sx={{ display: 'inline-flex', gap: 1 }}>
