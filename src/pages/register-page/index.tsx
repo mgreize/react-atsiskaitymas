@@ -8,9 +8,9 @@ import { useSearchParams } from 'react-router-dom';
 import AuthForm from '../../components/auth-form';
 import { UserRegistration } from '../../types';
 import { useRootDispatch, useRootSelector } from '../../store/hooks';
-import { createRegisterAction } from '../../store/action-creators';
+import { createRegisterActionThunk } from '../../store/action-creators';
 import { selectAuthLoading } from '../../store/selectors';
-import AuthService from '../../store/features/auth/auth-service';
+import AuthService from '../../services/auth-service';
 
 type RegisterConfig = FormikConfig<UserRegistration>;
 
@@ -29,15 +29,14 @@ const validationSchema = Yup.object({
       async (email, context) => {
         if (!email) return false;
         if (!validator.isEmail(email)) return false;
-
-        const emailIsAvailable = await AuthService.checkEmailAvailability(email);
-        if (!emailIsAvailable) {
+        try {
+          const emailIsAvailable = await AuthService.checkEmailAvailability(email);
+          return emailIsAvailable;
+        } catch (error) {
           throw context.createError({
-            message: 'Email is taken',
+            message: error instanceof Error ? error.message : error as string,
           });
         }
-
-        return true;
       },
     ),
   password: Yup.string()
@@ -57,9 +56,9 @@ const RegisterPage: React.FC = () => {
   const loading = useRootSelector(selectAuthLoading);
   const dispatch = useRootDispatch();
 
-  const handleRegister: RegisterConfig['onSubmit'] = ({ email, password, repeatPassword }) => {
+  const handleRegister: RegisterConfig['onSubmit'] = ({ email, password }) => {
     const redirect = searchParams.get('redirect') ?? '/';
-    const registerAction = createRegisterAction({ email, password, repeatPassword }, redirect);
+    const registerAction = createRegisterActionThunk({ email, password }, redirect);
     dispatch(registerAction);
   };
 
@@ -74,7 +73,7 @@ const RegisterPage: React.FC = () => {
 
   return (
     <AuthForm
-      formTitle="Register"
+      formTitle="Registruotis"
       submitText="Register"
       btnActive={dirty && isValid}
       onSubmit={handleSubmit}

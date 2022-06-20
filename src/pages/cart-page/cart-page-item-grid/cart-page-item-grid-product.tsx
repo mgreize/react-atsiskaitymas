@@ -3,33 +3,34 @@ import {
   Typography,
   Grid,
   IconButton,
-  Box,
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { CartItemJoined } from '../../../types';
+import { CartItemPopulated } from '../../../types';
 import Img from '../../../components/img';
 import NumberField from '../../../components/number-field';
 
-type CartPageItemGridProductProps = CartItemJoined;
+type CartPageItemGridProductProps = CartItemPopulated;
 
-const CartPageItemGridProduct: React.FC<CartPageItemGridProductProps> = (props) => (
+const CartPageItemGridProduct: React.FC<CartPageItemGridProductProps> = ({
+  product,
+  amount,
+}) => (
   <Grid container columnSpacing={5}>
-    <Grid item xs={4} sx={{ display: 'flex', gap: 1 }}>
+    <Grid item xs={3} sx={{ display: 'flex', gap: 1 }}>
       <Img
-        src="https://media.istockphoto.com/photos/red-apple-picture-id184276818?k=20&m=184276818&s=612x612&w=0&h=QxOcueqAUVTdiJ7DVoCu-BkNCIuwliPEgtAQhgvBA_g="
+        src={product.images[0]}
         alt=""
         sx={{ width: 120, height: 120 }}
       />
-      <Box>Čia yra papildoma informacija</Box>
-    </Grid>
-    <Grid item xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
-      <Typography variant="h6">19.99 $</Typography>
     </Grid>
     <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center' }}>
-      <NumberField buttonsSx={{ width: 30 }} />
+      <Typography variant="h6">{`${product.price} €`}</Typography>
+    </Grid>
+    <Grid item xs={3} sx={{ display: 'flex', alignItems: 'center' }}>
+      <NumberField buttonsSx={{ width: 30 }} value={amount} />
     </Grid>
     <Grid item xs={2} sx={{ display: 'flex', alignItems: 'center' }}>
-      <Typography variant="h6">19.99 $</Typography>
+      <Typography variant="h6">{`${product.price * amount} €`}</Typography>
     </Grid>
     <Grid item xs={1} sx={{ display: 'flex', alignItems: 'center' }}>
       <IconButton size="large">

@@ -12,8 +12,10 @@ const theme = createTheme({
   shape: {
     borderRadius: 0,
   },
-  typography: {
-    fontFamily: '\'arial\'',
+  mixins: {
+    navbar: {
+      height: 56,
+    },
   },
 });
 

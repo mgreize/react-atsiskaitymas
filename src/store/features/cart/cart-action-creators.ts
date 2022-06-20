@@ -1,94 +1,83 @@
 /* eslint-disable import/prefer-default-export */
 import { Dispatch } from 'redux';
-import { CartItemJoined, Item } from '../../../types';
+import CartService from '../../../services/cart-service';
+import { CartItemPopulated } from '../../../types';
 import { AppAction, RootState } from '../../redux-types';
 import {
-  CartFetchItemsLoadingAction,
-  CartFetchItemsSuccessAction,
-  CartFetchItemsFailureAction,
-  CartAddItemAction,
-  CartUpdateItemAction,
-  CartDeleteItemAction,
+  CartFetchLoadingAction,
+  CartFetchSuccessAction,
+  CartFetchFailureAction,
   CartActionType,
 } from './cart-types';
-import { createShopChangeItemAmountAction } from '../shop/shop-action-creators';
-import ShopService from '../../../services/shop-service';
 
-const cartFetchItemsLoadingAction: CartFetchItemsLoadingAction = {
-  type: CartActionType.CART_FETCH_ITEMS_LOADING,
+const cartFetchItemsLoadingAction: CartFetchLoadingAction = {
+  type: CartActionType.CART_FETCH_LOADING,
 };
 
-const createCartFetchItemsSuccessAction = (joinedItems: CartItemJoined[]): CartFetchItemsSuccessAction => ({
-  type: CartActionType.CART_FETCH_ITEMS_SUCCESS,
-  payload: { joinedItems },
+const createCartFetchSuccessAction = (cartItems: CartItemPopulated[]): CartFetchSuccessAction => ({
+  type: CartActionType.CART_FETCH_SUCCESS,
+  payload: { items: cartItems },
 });
 
-const createCartFetchItemsFailureAction = (error: string): CartFetchItemsFailureAction => ({
-  type: CartActionType.CART_FETCH_ITEMS_FAILURE,
+const createCartFetchFailureAction = (error: string): CartFetchFailureAction => ({
+  type: CartActionType.CART_FETCH_FAILURE,
   payload: { error },
 });
 
-const createCartAddItemAction = (shopItemId: string, amount: number): CartAddItemAction => ({
-  type: CartActionType.CART_ADD_ITEM,
-  payload: { shopItemId, amount },
-});
-
-const createCartUpdateItemAction = (cartItemId: string, amount: number): CartUpdateItemAction => ({
-  type: CartActionType.CART_UPDATE_ITEM,
-  payload: { cartItemId, amount },
-});
-
-const createCartDeleteItemAction = (cartItemId: string): CartDeleteItemAction => ({
-  type: CartActionType.CART_DELETE_ITEM,
-  payload: { cartItemId },
-});
-
-export const createModifyCartItemAction = (shopItemId: string, newAmount: number) => (
-  dispatch: Dispatch<AppAction>,
-  getState: () => RootState,
-): void => {
-  const { shop, cart } = getState();
-  const existingCartItem = cart.items.find((x) => x.shopItemId === shopItemId);
-  const shopItem = shop.items.find((x) => x.id === shopItemId) as Item;
-
-  const totalAmount = existingCartItem ? existingCartItem.amount + shopItem.amount : shopItem.amount;
-  const amountLeft = totalAmount - newAmount;
-
-  if (existingCartItem) {
-    if (newAmount > 0) {
-      const cartUpdateItemAction = createCartUpdateItemAction(existingCartItem.id, newAmount);
-      dispatch(cartUpdateItemAction);
-    } else {
-      const cartDeleteItemAction = createCartDeleteItemAction(existingCartItem.id);
-      dispatch(cartDeleteItemAction);
-    }
-  } else {
-    const cartAddItemAction = createCartAddItemAction(shopItemId, newAmount);
-    dispatch(cartAddItemAction);
-  }
-
-  const shopChangeItemAmountAction = createShopChangeItemAmountAction(shopItemId, amountLeft);
-  dispatch(shopChangeItemAmountAction);
-};
-
-export const cartFetchItemsAction = async (
+export const cartFetchItemsActionThunk = async (
   dispatch: Dispatch<AppAction>,
   getState: () => RootState,
 ): Promise<void> => {
-  dispatch(cartFetchItemsLoadingAction);
-
+  const { token } = getState().auth;
   try {
-    const cartItems = getState().cart.items;
-    const shopItemsIds = cartItems.map((cartItem) => cartItem.shopItemId);
-    const shopItems = await ShopService.fetchItemsByIds(shopItemsIds);
+    if (token === null) {
+      throw new Error('Prašome prisijungti');
+    }
+    dispatch(cartFetchItemsLoadingAction);
+    // Siunčiama užklausa į serverį, kad parsiųsti visus CartItem'us
+    const cartItems: CartItemPopulated[] = await CartService.fetchCartItems(token);
 
-    const joinedCartItems: CartItemJoined[] = [];
-
-    const cartFetchItemsSuccessAction = createCartFetchItemsSuccessAction(joinedCartItems);
+    const cartFetchItemsSuccessAction = createCartFetchSuccessAction(cartItems);
     dispatch(cartFetchItemsSuccessAction);
   } catch (error) {
     const errMsg = error instanceof Error ? error.message : String(error);
-    const authFailureAction = createCartFetchItemsFailureAction(errMsg);
+    const authFailureAction = createCartFetchFailureAction(errMsg);
+    dispatch(authFailureAction);
+  }
+};
+
+export const createModifyCartItemActionThunk = (productId: string, amount: number) => async (
+  dispatch: Dispatch<AppAction>,
+  getState: () => RootState,
+): Promise<void> => {
+  const { cart, auth: { token } } = getState();
+
+  try {
+    if (token === null) {
+      throw new Error('Reikalingas prisijungimas');
+    }
+
+    const existingCartItem = cart.items.find((x) => x.product.id === productId);
+    if (existingCartItem) {
+      if (amount > 0) {
+        // Siunčiama užklausa į serverį, kad atnaujinti egzistuojantį CartItem
+        await CartService.updateCartItem(
+          existingCartItem.id,
+          { amount },
+          token,
+        );
+        await cartFetchItemsActionThunk(dispatch, getState);
+      } else {
+        // trinimas
+      }
+    } else {
+      // Siunčiama užklausa į serverį, kad sukurti CartItem
+      // const cartAddItemAction = createCartAddItemAction(productId, newAmount);
+      // dispatch(cartAddItemAction);
+    }
+  } catch (error) {
+    const errMsg = error instanceof Error ? error.message : String(error);
+    const authFailureAction = createCartFetchFailureAction(errMsg);
     dispatch(authFailureAction);
   }
 };

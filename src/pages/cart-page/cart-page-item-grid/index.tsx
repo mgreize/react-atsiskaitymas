@@ -9,7 +9,7 @@ const CartPageItemGrid: React.FC = () => {
   const cartItems = useRootSelector(selectCartJoinedItems);
 
   return (
-    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    <Box sx={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       <CartPageItemGridHeader />
       {cartItems.map((cartItem) => (
         <CartPageItemGridProduct key={cartItem.id} {...cartItem} />

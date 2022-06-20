@@ -13,6 +13,9 @@
   * npm i
 
 ## Project scripts
-  * npm start - launch development server
+  * npm start - lounch development server
   * npm build - compile app
-  * npm run server - launches demo server
+  * npm run server - lounches demo server
+
+## server 
+  * https://github.com/mgreize/server

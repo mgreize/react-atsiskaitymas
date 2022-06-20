@@ -1,6 +1,7 @@
 import { User } from '../../../types';
 
 export type AuthState = {
+  token: string | null,
   user: User | null,
   error: string | null,
   loading: boolean,
@@ -12,6 +13,7 @@ export enum AuthActionType {
   AUTH_CLEAR_ERROR = 'AUTH_CLEAR_ERROR',
   AUTH_SUCCESS = 'AUTH_SUCCESS',
   AUTH_FAILURE = 'AUTH_FAILURE',
+  AUTH_USER_UPDATE = 'AUTH_USER_UPDATE',
 }
 
 export type AuthLoadingAction = {
@@ -30,6 +32,7 @@ export type AuthSuccessAction = {
   type: AuthActionType.AUTH_SUCCESS,
   payload: {
     user: User,
+    token: string,
   }
 };
 
@@ -40,4 +43,12 @@ export type AuthFailureAction = {
   }
 };
 
-export type AuthAction = AuthSuccessAction | AuthFailureAction | AuthLoadingAction | AuthLogoutAction | AuthClearErrorAction;
+export type AuthUserUpdateAction = {
+  type: AuthActionType.AUTH_USER_UPDATE,
+  payload: {
+    user: User,
+    token: string,
+  }
+};
+
+export type AuthAction = AuthSuccessAction | AuthFailureAction | AuthLoadingAction | AuthLogoutAction | AuthClearErrorAction | AuthUserUpdateAction;

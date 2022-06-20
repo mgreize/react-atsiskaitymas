@@ -1,17 +1,17 @@
-import React from 'react';
-import { Provider as ReduxProvider } from 'react-redux';
-import { Routes, Route } from 'react-router-dom';
+import React, { useEffect } from 'react';
+import { Routes, Route, useLocation } from 'react-router-dom';
+
+import { useRootSelector, useRootDispatch } from './store/hooks';
+import { selectAuthLoading, selectAuthLoggedIn, selectAuthToken } from './store/selectors';
+import { cartFetchItemsActionThunk, createAuthenticateActionThunk } from './store/action-creators';
 
 // all
 import HomePage from './pages/home-page';
-import ShopPage from './pages/shop-page/index';
-import WomanPage from './pages/woman-page';
-import ManPage from './pages/man-page';
+import ShopPage from './pages/shop-page';
 import CartPage from './pages/cart-page';
-import SmartPage from './pages/smart-page';
 // visitor
 import LoginPage from './pages/login-page';
-import RegisterPage from './pages/register-page/index';
+import RegisterPage from './pages/register-page';
 // auth
 import ProfilePage from './pages/profile-page';
 
@@ -19,17 +19,31 @@ import VisitorLayout from './layouts/visitor-layout';
 import RequireAuth from './routing/require-auth';
 import RequireVisitor from './routing/require-visitor';
 
-import store from './store';
+const App: React.FC = () => {
+  const location = useLocation();
+  const token = useRootSelector(selectAuthToken);
+  const loggedIn = useRootSelector(selectAuthLoggedIn);
+  const loading = useRootSelector(selectAuthLoading);
+  const dispatch = useRootDispatch();
 
-const App: React.FC = () => (
-  <ReduxProvider store={store}>
+  useEffect(() => {
+    if (loggedIn) {
+      dispatch(cartFetchItemsActionThunk);
+    }
+  }, [loggedIn]);
+
+  if (!loggedIn && token) {
+    if (!loading) {
+      dispatch(createAuthenticateActionThunk(token, location.pathname));
+    }
+    return <div />;
+  }
+
+  return (
     <Routes>
       <Route path="/" element={<VisitorLayout />}>
         <Route index element={<HomePage />} />
         <Route path="/shop" element={<ShopPage />} />
-        <Route path="/woman" element={<WomanPage />} />
-        <Route path="/man" element={<ManPage />} />
-        <Route path="/smart" element={<SmartPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route
           path="auth/login"
@@ -57,7 +71,7 @@ const App: React.FC = () => (
         />
       </Route>
     </Routes>
-  </ReduxProvider>
-);
+  );
+};
 
 export default App;

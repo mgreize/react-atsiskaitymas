@@ -1,42 +1,35 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Typography,
-  Box,
-} from '@mui/material';
+import { Box } from '@mui/material';
 
 import NumberField from '../../../components/number-field';
 import { useRootDispatch, useRootSelector } from '../../../store/hooks';
-import { createModifyCartItemAction } from '../../../store/action-creators';
-import { selectCartItemAmountByShopItemId } from '../../../store/selectors';
+import { createModifyCartItemActionThunk } from '../../../store/action-creators';
+import { selectCartItemAmountByProductId } from '../../../store/selectors';
 
 type ShopPageCardActionsProps = {
   id: string,
-  inStock: number,
 };
 
 const ShopPageCardActions: React.FC<ShopPageCardActionsProps> = ({
   id,
-  inStock,
 }) => {
   const dispatch = useRootDispatch();
-  const cartItemAmount = useRootSelector(selectCartItemAmountByShopItemId(id));
+  const cartItemAmount = useRootSelector(selectCartItemAmountByProductId(id));
   const [amount, setAmount] = useState<number>(cartItemAmount);
-  const available = inStock > 0 || cartItemAmount > 0;
 
-  const addToCart = (): void => {
-    const addToCartAction = createModifyCartItemAction(id, amount);
-    dispatch(addToCartAction);
+  const modifyCartItem = (): void => {
+    const modifyCartItemAction = createModifyCartItemActionThunk(id, amount);
+    dispatch(modifyCartItemAction);
   };
 
   useEffect(() => {
     if (cartItemAmount !== amount) {
-      addToCart();
+      modifyCartItem();
     }
   }, [amount]);
 
   return (
     <Box>
-      {!available && (<Typography color="error">Currently not available</Typography>)}
       <Box sx={{
         display: 'flex',
         gap: 0.5,
@@ -46,10 +39,8 @@ const ShopPageCardActions: React.FC<ShopPageCardActionsProps> = ({
           size="small"
           sx={{ alignSelf: 'stretch' }}
           InputProps={{ sx: { height: '100%' } }}
-          disabled={!available}
           min={0}
-          max={inStock + cartItemAmount}
-          value={amount}
+          value={cartItemAmount}
           onChange={(_, newValue) => setAmount(newValue)}
           onBlur={(_, newValue) => setAmount(newValue)}
           fullWidth

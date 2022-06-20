@@ -8,18 +8,24 @@ import {
   MenuItem,
   Divider,
   Typography,
+  Badge,
 } from '@mui/material';
+import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import PersonIcon from '@mui/icons-material/Person';
+import PowerSettingsNewIcon from '@mui/icons-material/PowerSettingsNew';
 import { useNavigate } from 'react-router-dom';
-import { selectUser } from '../../store/selectors';
+import { selectAuthUser, selectCartItemsCount } from '../../store/selectors';
 import { authLogoutAction } from '../../store/action-creators';
 import { useRootDispatch, useRootSelector } from '../../store/hooks';
+import NavbarLink from './navbar-link';
 
 const NavbarAuthMenu: React.FC = () => {
   const navigate = useNavigate();
-  const user = useRootSelector(selectUser);
+  const user = useRootSelector(selectAuthUser);
   const dispatch = useRootDispatch();
   const [menuOpen, setMenuOpen] = useState<boolean>(false);
   const popperAnchorRef = useRef<HTMLDivElement>(null);
+  const cartItemsCount = useRootSelector(selectCartItemsCount);
 
   const logout = () => {
     dispatch(authLogoutAction);
@@ -41,8 +47,13 @@ const NavbarAuthMenu: React.FC = () => {
   return (
     <Box
       ref={popperAnchorRef}
-      sx={{ display: 'inline-flex', alignItems: 'center', height: 64 }}
+      sx={(theme) => ({ display: 'inline-flex', alignItems: 'center', height: theme.mixins.navbar.height })}
     >
+      <NavbarLink to="/cart" sx={{ display: 'inline-flex', gap: 1, mr: 2 }}>
+        <Badge badgeContent={cartItemsCount} color="primary">
+          <ShoppingCartIcon sx={{ fontSize: 28 }} />
+        </Badge>
+      </NavbarLink>
       <Box
         sx={{
           display: 'flex',
@@ -64,11 +75,13 @@ const NavbarAuthMenu: React.FC = () => {
         <Paper elevation={3}>
           <MenuList>
             <MenuItem onClick={() => handleNavigate('/profile')}>
-              ProfilePage
+              <PersonIcon sx={{ mr: 1 }} />
+              <Typography>Jūsų profilis</Typography>
             </MenuItem>
             <Divider />
             <MenuItem onClick={logout}>
-              Atsijungti
+              <PowerSettingsNewIcon sx={{ mr: 1 }} />
+              <Typography>Atsijungti</Typography>
             </MenuItem>
           </MenuList>
         </Paper>

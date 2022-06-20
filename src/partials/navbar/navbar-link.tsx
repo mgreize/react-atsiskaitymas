@@ -7,7 +7,7 @@ const NavbarLink = styled(NavLink)(({ theme }) => ({
   textDecoration: 'none',
   color: theme.palette.common.white,
   padding: theme.spacing(0, 2),
-  ...theme.mixins.toolbar,
+  height: theme.mixins.navbar.height,
 
   ':hover': {
     color: theme.palette.grey[200],

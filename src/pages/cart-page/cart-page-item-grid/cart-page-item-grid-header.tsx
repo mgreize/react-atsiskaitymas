@@ -6,10 +6,10 @@ import {
 
 const CartPageItemGridHeader: React.FC = () => (
   <Grid container sx={{ mb: 3 }} columnSpacing={5}>
-    <Grid item xs={4}>
+    <Grid item xs={3}>
       <Typography variant="h5">Product</Typography>
     </Grid>
-    <Grid item xs={2}>
+    <Grid item xs={3}>
       <Typography variant="h5">Price</Typography>
     </Grid>
     <Grid item xs={3}>
